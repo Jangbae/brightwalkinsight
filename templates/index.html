@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jangbae Insight App</title>
+    </head>
+    <body>
+        <div class="container">
+          <h1>Jangbae Insight App
+          </h1>
+          <form role="form" method='POST' action='index'>
+            <div class="form-group">
+              <input type="text" name="current_location" placeholder="Enter Your Location" style="max-width: 300px;" autofocus required>
+            </div>
+
+            <div class="form-group">
+              <input type="text" name="target_location" placeholder="Enter Destination" style="max-width: 300px;" autofocus required>
+            </div>
+          <button type="submit" value='NextButton'>Submit</button>
+          </form>
+        </div>
+        <div>
+        </div>
+        {% block map %}
+            {% include "defaultMap.html" %}
+        {% endblock %}        
+    </body>
+</html>
