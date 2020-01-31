@@ -37,7 +37,7 @@ def index():
         routeInfo = route_info(oroute_list, bos_graph)        
         save_route_html(oroute_list, bos_graph, cCoord, tCoord)
         
-        return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=routeInfo[0], fr_nlight=routeInfo[1], br_distance=routeInfo[2], br_nlight=routeInfo[3])
+        return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
 
 
 @app.route('/next_route',methods=['POST'])
@@ -60,7 +60,7 @@ def next_route():  #remember the function name does not need to match the URL
     oroute_list = find_route(node1, node2, bos_graph)
     routeInfo = route_info(oroute_list, bos_graph)
     save_route_html(oroute_list, bos_graph, cCoord, tCoord)
-    return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=routeInfo[0], fr_nlight=routeInfo[1], br_distance=routeInfo[2], br_nlight=routeInfo[3])
+    return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
 
 
 def find_route(start, target, graph):

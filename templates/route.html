@@ -5,12 +5,12 @@
     </head>
     <body>
         <div class="container">
-          <h1>Your current location is {{cL}} and Destination is {{tL}}
-          </h1>
-          <h1>There are {{fr_nlight}} street lights in the fastest route and the distance is {{fr_distance}}.
-          </h1>                    
-          <h1>There are {{br_nlight}} street lights in a brighter route and the distance is {{br_distance}}.
-          </h1>                    
+          <h4>Your current location is {{cL}} and Destination is {{tL}}
+          </h4>
+          <h4>There are {{fr_nlight}} street lights in the fastest route and the distance is {{fr_distance}}m.
+          </h4>                    
+          <h4>There are {{br_nlight}} street lights in a brighter route and the distance is {{br_distance}}m.
+          </h4>                    
           <form role="form" method='POST' action='/next_route'>
             <div class="form-group">
               <input type="text" name="current_location" placeholder="Enter Your Location" style="max-width: 300px;" autofocus required>
