@@ -14,7 +14,4 @@ osmnx==0.11.3
 pandas==0.25.3
 pip==20.0.2
 requests==2.22.0
-rtree==0.9.3
 shapely==1.7.0
-libspatialindex==1.9.3
-libspatialite==4.3.0a
