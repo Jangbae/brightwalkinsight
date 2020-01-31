@@ -95,7 +95,14 @@ def address_to_coord(addr):
 
 def save_route_html(route_list, graph, oCoord, dCoord):
     print("save_route_html")
-    graph_map = ox.plot_graph_folium(graph, edge_width=1)
+#     graph_map = ox.plot_graph_folium(graph, edge_width=1)
+
+    map = flm.Map(
+        location=[42.361145, -71.057083],
+        tiles='cartodbpositron',
+        zoom_start=13
+    )
+    
     locationlist = [oCoord, dCoord]
     popup_list = ['Origin','Destination']
     string = ['Origin','Destination']
@@ -103,8 +110,8 @@ def save_route_html(route_list, graph, oCoord, dCoord):
     for point in range(0, len(locationlist)):
         flm.Marker(locationlist[point], popup=popup_list[point], tooltip=string[point]).add_to(graph_map)
         
-    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=graph_map, popup_attribute='length', route_color='#66ff33', route_opacity=0.8)    
-    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=graph_map, popup_attribute='length', route_opacity=1, route_width=2)
+    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, popup_attribute='length', route_color='#66ff33', route_opacity=0.8)    
+    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, popup_attribute='length', route_opacity=1, route_width=2)
     route_graph_map.save('templates/route_graph_test.html')
 
     # with is like your try .. finally block in this case
