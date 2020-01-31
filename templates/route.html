@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Jangbae Insight App</title>
-    </head>
-    <body>
-        <div class="container">
-          <h4>Your current location is {{cL}} and Destination is {{tL}}
-          </h4>
-          <h4>There are {{fr_nlight}} street lights in the fastest route and the distance is {{fr_distance}}m.
-          </h4>                    
-          <h4>There are {{br_nlight}} street lights in a brighter route and the distance is {{br_distance}}m.
-          </h4>                    
-          <form role="form" method='POST' action='/next_route'>
-            <div class="form-group">
-              <input type="text" name="current_location" placeholder="Enter Your Location" style="max-width: 300px;" autofocus required>
-            </div>
-
-            <div class="form-group">
-              <input type="text" name="target_location" placeholder="Enter Destination" style="max-width: 300px;" autofocus required>
-            </div>
-            <button type="submit">Submit</button>
-          </form>
-          <br>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <body>    
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:400px" id="mySidebar">
+        <div class="w3-container w3-display-container w3-padding-16">
+            <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+            <h3 class="w3-wide"><b><span class="w3-tag">Light Your</span> Way Home!</b></h3>
         </div>
+        <form class="w3-container" role="form" method='POST' action='index'>
+          <p>
+          <div class="form-group">          
+          <label>Your location</label>          
+          <input class="w3-input" type="text" name="current_location" >
+          </div>
+          </p>
+          <p>
+          <div class="form-group">          
+          <label>Destination</label>
+          <input class="w3-input" type="text" name="target_location">
+          </div>
+          <button type="submit" value='NextButton'>Submit</button>          
+          </p>
+          <p>
+            <div class="w3-container">
+                <div class="w3-left-align"><p><b>From</b> {{cL}}</p></div>              
+                <div class="w3-left-align"><p><b>To</b> {{tL}}</p></div> 
+                <div class="w3-left-align"><p><span style="background-color:#808080">The fastest route ({{fr_distance}}m) <b>{{fr_nlight}} streetlights.</b></span></p></div>                              
+                <div class="w3-left-align"><p><span style="background-color:#ffff00">A brighter route ({{br_distance}}m) <b>{{br_nlight}} streetlights.</b></span></p></div>              
+            </div>  
+        </p>          
+        </form>      
+        </nav> 
         <div>
         </div>
         {% block map %}
             {% include "route_graph_test_adjusted.html" %}
-        {% endblock %}        
+        {% endblock %}  
     </body>
 </html>

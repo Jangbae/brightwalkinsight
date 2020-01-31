@@ -95,8 +95,6 @@ def address_to_coord(addr):
 
 def save_route_html(route_list, graph, oCoord, dCoord):
     print("save_route_html")
-#     graph_map = ox.plot_graph_folium(graph, edge_width=1)
-
     map = flm.Map(
         location=[42.361145, -71.057083],
         tiles='cartodbpositron',
@@ -110,18 +108,20 @@ def save_route_html(route_list, graph, oCoord, dCoord):
     for point in range(0, len(locationlist)):
         flm.Marker(locationlist[point], popup=popup_list[point], tooltip=string[point]).add_to(map)
         
-    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, popup_attribute='length', route_color='#66ff33', route_opacity=0.8)    
-    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, popup_attribute='length', route_opacity=1, route_width=2)
+    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, route_color='#ffff00', route_opacity=1, route_width=3)    
+    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, route_color='#808080', route_opacity=1, route_width=1)
     route_graph_map.save('templates/route_graph_test.html')
 
     # with is like your try .. finally block in this case
     with open('templates/route_graph_test.html', 'rt') as file:
         with open('templates/route_graph_test_adjusted.html', 'wt') as fout:
             for idx, line in enumerate(file):
-                if(idx == 27 or idx==28):
+                if(idx == 27):
                     line=line.replace('100','75')
+                if(idx==28):
+                    line=line.replace('100','90')                
                 if(idx == 29):
-                    line=line.replace('0.0','10.0')
+                    line=line.replace('0.0','28.0')
                 fout.write(line)
             fout.close()
         file.close()

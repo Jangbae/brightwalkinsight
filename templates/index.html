@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Jangbae Insight App</title>
-    </head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <body>
-        <div class="container">
-          <h1>Jangbae Insight App
-          </h1>
-          <form role="form" method='POST' action='index'>
-            <div class="form-group">
-              <input type="text" name="current_location" placeholder="Enter Your Location" style="max-width: 300px;" autofocus required>
-            </div>
-
-            <div class="form-group">
-              <input type="text" name="target_location" placeholder="Enter Destination" style="max-width: 300px;" autofocus required>
-            </div>
-          <button type="submit" value='NextButton'>Submit</button>
-          </form>
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:400px" id="mySidebar">
+        <div class="w3-container w3-display-container w3-padding-16">
+            <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+            <h3 class="w3-wide"><b><span class="w3-tag">Light Your</span> Way Home!</b></h3>
         </div>
+        <form class="w3-container" role="form" method='POST' action='index'>
+          <p>
+          <div class="form-group">          
+          <label>Your location</label>
+          <input class="w3-input" type="text" name="current_location" >
+          </div>
+          </p>
+          <p>
+          <div class="form-group">          
+          <label>Destination</label>
+          <input class="w3-input" type="text" name="target_location">
+          </div>
+          <button type="submit" value='NextButton'>Submit</button>          
+          </p>
+        </form>      
+        </nav> 
+
         <div>
         </div>
         {% block map %}
