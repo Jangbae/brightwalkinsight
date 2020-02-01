@@ -118,10 +118,8 @@ def save_route_html(route_list, graph, oCoord, dCoord):
             for idx, line in enumerate(file):
                 if(idx == 27):
                     line=line.replace('100','75')
-                if(idx==28):
-                    line=line.replace('100','90')                
                 if(idx == 29):
-                    line=line.replace('0.0','28.0')
+                    line=line.replace('0.0','25.0')
                 fout.write(line)
             fout.close()
         file.close()
