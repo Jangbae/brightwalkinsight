@@ -119,11 +119,10 @@ def save_route_html(route_list, graph, oCoord, dCoord):
                 if(idx == 27):
                     line=line.replace('100','75')
                 if(idx == 29):
-                    line=line.replace('0.0','25.0')
+                    line=line.replace('0.0','28.0')
                 fout.write(line)
             fout.close()
-        file.close()
-    
+        file.close()    
 
 if __name__ == '__main__':
     app.run(debug=True)
