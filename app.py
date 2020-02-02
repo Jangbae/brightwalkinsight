@@ -9,7 +9,7 @@ from geopy.exc import GeocoderTimedOut
 
 app = Flask(__name__)
 app.vars = {}
-bos_graph = nx.read_gpickle('BostonGraph_reduced.gpickle')
+bos_graph = nx.read_gpickle('BostonGraph_Total.gpickle')
 
 @app.route('/index',methods=['GET', 'POST'])
 def index():
@@ -77,7 +77,7 @@ def route_info(routes, graph):
         totalSL=0
         for v in route[1:]:
             totalDist += graph[u][v][0]['length']
-            totalSL += graph[u][v][0]['SL_count']    
+            totalSL += graph[u][v][0]['SL_Count']    
             u = v
         route_info.append(totalDist)
         route_info.append(totalSL)
