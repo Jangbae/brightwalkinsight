@@ -75,9 +75,13 @@ def route_info(routes, graph):
         u = route[0]
         totalDist=0
         totalSL=0
+        totalCrime=0
+        totalAccid=0
         for v in route[1:]:
             totalDist += graph[u][v][0]['length']
             totalSL += graph[u][v][0]['SL_Count']    
+#             totalCrime += graph[u][v][0]['Crime_Count']                
+#             totalAccid += graph[u][v][0]['PED_Acci']                            
             u = v
         route_info.append(totalDist)
         route_info.append(totalSL)
@@ -108,8 +112,8 @@ def save_route_html(route_list, graph, oCoord, dCoord):
     for point in range(0, len(locationlist)):
         flm.Marker(locationlist[point], popup=popup_list[point], tooltip=string[point]).add_to(map)
         
-    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, route_color='#ffff00', route_opacity=1, route_width=3)    
-    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, route_color='#808080', route_opacity=1, route_width=1)
+    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, route_color='#e6e600', route_opacity=1, route_width=4)    
+    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, route_color='#3366ff', route_opacity=1, route_width=1)
     route_graph_map.save('templates/route_graph_test.html')
 
     # with is like your try .. finally block in this case
