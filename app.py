@@ -118,7 +118,9 @@ def save_route_html(route_list, graph, oCoord, dCoord):
 
     # with is like your try .. finally block in this case
     with open('templates/route_graph_test.html', 'rt') as file:
+        print("opened templates/route_graph_test.html")
         with open('templates/route_graph_test_adjusted.html', 'wt') as fout:
+            print("opened templates/route_graph_test_adjusted.html")
             for idx, line in enumerate(file):
                 if(idx == 27):
                     line=line.replace('100','75')
@@ -126,7 +128,9 @@ def save_route_html(route_list, graph, oCoord, dCoord):
                     line=line.replace('0.0','28.0')
                 fout.write(line)
             fout.close()
+            print("saved templates/route_graph_test_adjusted.html")            
         file.close()    
-
+        print("saved templates/route_graph_test.html")
+                    
 if __name__ == '__main__':
     app.run(debug=True)
