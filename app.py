@@ -41,27 +41,33 @@ def index():
         return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
 
 
-@app.route('/next_route',methods=['POST'])
+@app.route('/next_route',methods=['GET','POST'])
 def next_route():  #remember the function name does not need to match the URL
-    app.vars['currentL'] = request.form['current_location']
-    app.vars['targetL'] = request.form['target_location'] 
+    cLocation = 'here'
+    tLocation = 'there'
+    if request.method == 'GET':
+        return render_template('index.html',cL=cLocation,tL=tLocation)
+    else:
+        app.vars['currentL'] = request.form['current_location']
+        app.vars['targetL'] = request.form['target_location'] 
        
-    print(app.vars['currentL'])
-    print(app.vars['targetL'])
+        print(app.vars['currentL'])
+        print(app.vars['targetL'])
 
-    cCoord = address_to_coord(app.vars['currentL'])
-    tCoord = address_to_coord(app.vars['targetL'])
+        cCoord = address_to_coord(app.vars['currentL'])
+        tCoord = address_to_coord(app.vars['targetL'])
 
-    node1=ox.get_nearest_node(bos_graph,cCoord)
-    node2=ox.get_nearest_node(bos_graph,tCoord)        
+        node1=ox.get_nearest_node(bos_graph,cCoord)
+        node2=ox.get_nearest_node(bos_graph,tCoord)        
 
-    print("node1 : ", node1)
-    print("node2 : ", node2)
+        print("node1 : ", node1)
+        print("node2 : ", node2)
     
-    oroute_list = find_route(node1, node2, bos_graph)
-    routeInfo = route_info(oroute_list, bos_graph)
-    save_route_html(oroute_list, bos_graph, cCoord, tCoord)
-    return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
+        oroute_list = find_route(node1, node2, bos_graph)
+        routeInfo = route_info(oroute_list, bos_graph)
+        save_route_html(oroute_list, bos_graph, cCoord, tCoord)
+        
+        return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
 
 
 def find_route(start, target, graph):
