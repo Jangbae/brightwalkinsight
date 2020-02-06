@@ -6,10 +6,11 @@ from folium.features import DivIcon
 
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
+import os
 
 app = Flask(__name__)
 app.vars = {}
-bos_graph = nx.read_gpickle('BostonGraph_Total.gpickle')
+bos_graph = nx.read_gpickle('BostonGraph.gpickle')
 
 @app.route('/index',methods=['GET', 'POST'])
 def index():
@@ -65,7 +66,7 @@ def next_route():  #remember the function name does not need to match the URL
 
 def find_route(start, target, graph):
     fastest_route = nx.dijkstra_path(graph, start, target, weight='length')
-    brighter_route = nx.dijkstra_path(graph, start, target, weight='length_SL_density')        
+    brighter_route = nx.dijkstra_path(graph, start, target, weight='length_21')        
     return [fastest_route, brighter_route]
 
 
@@ -111,9 +112,12 @@ def save_route_html(route_list, graph, oCoord, dCoord):
 
     for point in range(0, len(locationlist)):
         flm.Marker(locationlist[point], popup=popup_list[point], tooltip=string[point]).add_to(map)
-        
+
+    print("plot route folium1")        
     route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, route_color='#e6e600', route_opacity=1, route_width=4)    
+    print("plot route folium2")        
     route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, route_color='#3366ff', route_opacity=1, route_width=1)
+    print("plot route folium3")        
     route_graph_map.save('templates/route_graph_test.html')
 
     # with is like your try .. finally block in this case
@@ -131,6 +135,7 @@ def save_route_html(route_list, graph, oCoord, dCoord):
             print("saved templates/route_graph_test_adjusted.html")            
         file.close()    
         print("saved templates/route_graph_test.html")
-                    
+    os.remove("templates/route_graph_test.html")
+                        
 if __name__ == '__main__':
     app.run(debug=True)
