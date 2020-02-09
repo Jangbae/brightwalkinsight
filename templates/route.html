@@ -63,8 +63,9 @@
         center: {{center}},
         zoom: 13
     });
-
-    map.on('load', function() {
+    new mapboxgl.Marker().setLngLat({{route_start}}).addTo(map);    
+    new mapboxgl.Marker().setLngLat({{route_end}}).addTo(map);        
+    map.on('load', function() {  
             map.addSource('route_f', {
                 'type': 'geojson',
                 'data': {

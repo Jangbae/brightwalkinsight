@@ -47,10 +47,9 @@
         center: [-71.057083,42.361145],
         zoom: 13
     });
-//     if({{route_data}}!=null){
-//         document.write({{route_data}});
-//     }
-    map.on('load', function() {
+    new mapboxgl.Marker().setLngLat({{route_start}}).addTo(map);    
+    new mapboxgl.Marker().setLngLat({{route_end}}).addTo(map);        
+    map.on('load', function() {    
             map.addSource('route_f', {
                 'type': 'geojson',
                 'data': {
@@ -101,6 +100,7 @@
                     'line-opacity': 0.75
                 }
             });
+
     });
 </script>
 

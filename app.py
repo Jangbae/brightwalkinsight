@@ -24,7 +24,10 @@ def index():
         return render_template('index.html', 
             ACCESS_KEY=MAPBOX_ACCESS_KEY,
             f_route_data=None,
-            s_route_data=None)            
+            s_route_data=None,
+            route_start=None,
+            route_end=None,            
+            )            
     else:
         app.vars['currentL'] = request.form['current_location']
         app.vars['targetL'] = request.form['target_location'] 
@@ -45,9 +48,12 @@ def index():
         routeInfo = route_info(o_routes, bos_graph)   
         o_routes_Geo = find_route_in_Geo(node1, node2, bos_graph)
         centerP = o_routes_Geo[0][int(len(o_routes_Geo[0])/2)]                            
+        print(o_routes_Geo[0][0], o_routes_Geo[0][-1])
         return render_template('route.html', 
             ACCESS_KEY=MAPBOX_ACCESS_KEY,
             f_route_data=o_routes_Geo[0],
+            route_start = o_routes_Geo[0][0],
+            route_end = o_routes_Geo[0][-1],
             s_route_data=o_routes_Geo[1],            
             cL=app.vars['currentL'],tL=app.vars['targetL'], 
             f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3], 
@@ -63,7 +69,9 @@ def next_route():
         return render_template('index.html', 
             ACCESS_KEY=MAPBOX_ACCESS_KEY,
             f_route_data=None,
-            s_route_data=None
+            s_route_data=None,
+            route_start=None,
+            route_end=None,                        
             )
     else:
         app.vars['currentL'] = request.form['current_location']
@@ -85,10 +93,13 @@ def next_route():
         routeInfo = route_info(o_routes, bos_graph)
         o_routes_Geo = find_route_in_Geo(node1, node2, bos_graph) 
         centerP = o_routes_Geo[0][int(len(o_routes_Geo[0])/2)]                            
+        print(o_routes_Geo[0][0], o_routes_Geo[0][-1])
         return render_template('route.html', 
             ACCESS_KEY=MAPBOX_ACCESS_KEY,
             f_route_data=o_routes_Geo[0],
-            s_route_data=o_routes_Geo[1],            
+            s_route_data=o_routes_Geo[1],
+            route_start = o_routes_Geo[0][0],
+            route_end = o_routes_Geo[0][-1],                        
             cL=app.vars['currentL'],tL=app.vars['targetL'], 
             f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3],
             s_distance=int(routeInfo[4]), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7], center=centerP)   
