@@ -1,23 +1,33 @@
-from flask import Flask, render_template, request
+import json
+from geojson import Point, Feature
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+
+import requests
 import networkx as nx
 import osmnx as ox
-import folium as flm
-from folium.features import DivIcon
-
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import os
 
+os.system("export APP_CONFIG_FILE=settings.py")
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.from_envvar('APP_CONFIG_FILE', silent=True)
 app.vars = {}
 bos_graph = nx.read_gpickle('BostonGraph.gpickle')
 
-@app.route('/index',methods=['GET', 'POST'])
+MAPBOX_ACCESS_KEY = app.config['MAPBOX_ACCESS_KEY']
+
+
+@app.route('/index',methods=['GET','POST'])
 def index():
     cLocation = 'here'
     tLocation = 'there'
     if request.method == 'GET':
-        return render_template('index.html',cL=cLocation,tL=tLocation)
+        return render_template('index.html', 
+            ACCESS_KEY=MAPBOX_ACCESS_KEY,
+            f_route_data=None,
+            s_route_data=None)            
     else:
         app.vars['currentL'] = request.form['current_location']
         app.vars['targetL'] = request.form['target_location'] 
@@ -34,23 +44,34 @@ def index():
         print("node1 : ", node1)
         print("node2 : ", node2)
 
-        oroute_list = find_route(node1, node2, bos_graph)
-        routeInfo = route_info(oroute_list, bos_graph)        
-        save_route_html(oroute_list, bos_graph, cCoord, tCoord)
-        
-        return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
-
+        o_routes = find_route(node1, node2, bos_graph)
+        routeInfo = route_info(o_routes, bos_graph)   
+        o_routes_Geo = find_route_in_Geo(node1, node2, bos_graph)
+        centerP = o_routes_Geo[0][int(len(o_routes_Geo[0])/2)]                            
+        return render_template('route.html', 
+            ACCESS_KEY=MAPBOX_ACCESS_KEY,
+            f_route_data=o_routes_Geo[0],
+            s_route_data=o_routes_Geo[1],            
+            cL=app.vars['currentL'],tL=app.vars['targetL'], 
+            f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3], 
+            s_distance=int(routeInfo[4]), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7],
+            center=centerP
+        )   
 
 @app.route('/next_route',methods=['GET','POST'])
-def next_route():  #remember the function name does not need to match the URL
+def next_route():
     cLocation = 'here'
     tLocation = 'there'
     if request.method == 'GET':
-        return render_template('index.html',cL=cLocation,tL=tLocation)
+        return render_template('index.html', 
+            ACCESS_KEY=MAPBOX_ACCESS_KEY,
+            f_route_data=None,
+            s_route_data=None
+            )
     else:
         app.vars['currentL'] = request.form['current_location']
         app.vars['targetL'] = request.form['target_location'] 
-       
+               
         print(app.vars['currentL'])
         print(app.vars['targetL'])
 
@@ -62,23 +83,43 @@ def next_route():  #remember the function name does not need to match the URL
 
         print("node1 : ", node1)
         print("node2 : ", node2)
-    
-        oroute_list = find_route(node1, node2, bos_graph)
-        routeInfo = route_info(oroute_list, bos_graph)
-        save_route_html(oroute_list, bos_graph, cCoord, tCoord)
-        
-        return render_template('route.html',cL=app.vars['currentL'],tL=app.vars['targetL'], fr_distance=int(routeInfo[0]), fr_nlight=routeInfo[1], br_distance=int(routeInfo[2]), br_nlight=routeInfo[3])
 
+        o_routes = find_route(node1, node2, bos_graph)
+        routeInfo = route_info(o_routes, bos_graph)
+        o_routes_Geo = find_route_in_Geo(node1, node2, bos_graph) 
+        centerP = o_routes_Geo[0][int(len(o_routes_Geo[0])/2)]                            
+        return render_template('route.html', 
+            ACCESS_KEY=MAPBOX_ACCESS_KEY,
+            f_route_data=o_routes_Geo[0],
+            s_route_data=o_routes_Geo[1],            
+            cL=app.vars['currentL'],tL=app.vars['targetL'], 
+            f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3],
+            s_distance=int(routeInfo[4]), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7], center=centerP)   
 
 def find_route(start, target, graph):
+    f_route = nx.dijkstra_path(graph, start, target, weight='length')
+    s_route = nx.dijkstra_path(graph, start, target, weight='length_21')        
+    return [f_route, s_route]
+
+
+def find_route_in_Geo(start, target, graph):
     fastest_route = nx.dijkstra_path(graph, start, target, weight='length')
-    brighter_route = nx.dijkstra_path(graph, start, target, weight='length_21')        
-    return [fastest_route, brighter_route]
+    safe_route = nx.dijkstra_path(graph, start, target, weight='length_21')
+    outlist = []
+    f_route_list = []        
+    s_route_list = []            
+    for idx in range(0, len(fastest_route)):
+        f_route_list.append([bos_graph.nodes[fastest_route[idx]]['x'], bos_graph.nodes[fastest_route[idx]]['y']])
+    for idx in range(0, len(safe_route)):
+        s_route_list.append([bos_graph.nodes[safe_route[idx]]['x'], bos_graph.nodes[safe_route[idx]]['y']])
+    outlist.append(f_route_list)
+    outlist.append(s_route_list)    
+    return outlist
 
 
-def route_info(routes, graph):
-    route_info = []
-    for route in routes:
+def route_info(i_routes, graph):
+    route_info_list = []
+    for route in i_routes:
         u = route[0]
         totalDist=0
         totalSL=0
@@ -87,12 +128,15 @@ def route_info(routes, graph):
         for v in route[1:]:
             totalDist += graph[u][v][0]['length']
             totalSL += graph[u][v][0]['SL_Count']    
-#             totalCrime += graph[u][v][0]['Crime_Count']                
-#             totalAccid += graph[u][v][0]['PED_Acci']                            
+            totalCrime += graph[u][v][0]['Crime_Count']                
+            totalAccid += graph[u][v][0]['PED_Acci']                            
             u = v
-        route_info.append(totalDist)
-        route_info.append(totalSL)
-    return route_info
+        route_info_list.append(totalDist)
+        route_info_list.append(totalSL)
+        route_info_list.append(totalCrime)
+        route_info_list.append(totalAccid)
+
+    return route_info_list
 
 
 def address_to_coord(addr):
@@ -102,46 +146,4 @@ def address_to_coord(addr):
     except GeocoderTimedOut:
         return address_to_coord(addr)
     return (location.latitude, location.longitude)
-
-
-def save_route_html(route_list, graph, oCoord, dCoord):
-    print("save_route_html")
-    map = flm.Map(
-        location=[42.361145, -71.057083],
-        tiles='cartodbpositron',
-        zoom_start=13
-    )
-    
-    locationlist = [oCoord, dCoord]
-    popup_list = ['Origin','Destination']
-    string = ['Origin','Destination']
-
-    for point in range(0, len(locationlist)):
-        flm.Marker(locationlist[point], popup=popup_list[point], tooltip=string[point]).add_to(map)
-
-    print("plot route folium1")        
-    route_graph_map = ox.plot_route_folium(graph, route_list[1], route_map=map, route_color='#e6e600', route_opacity=1, route_width=4)    
-    print("plot route folium2")        
-    route_graph_map = ox.plot_route_folium(graph, route_list[0], route_map=map, route_color='#3366ff', route_opacity=1, route_width=1)
-    print("plot route folium3")        
-    route_graph_map.save('templates/route_graph_test.html')
-
-    # with is like your try .. finally block in this case
-    with open('templates/route_graph_test.html', 'rt') as file:
-        print("opened templates/route_graph_test.html")
-        with open('templates/route_graph_test_adjusted.html', 'wt') as fout:
-            print("opened templates/route_graph_test_adjusted.html")
-            for idx, line in enumerate(file):
-                if(idx == 27):
-                    line=line.replace('100','75')
-                if(idx == 29):
-                    line=line.replace('0.0','28.0')
-                fout.write(line)
-            fout.close()
-            print("saved templates/route_graph_test_adjusted.html")            
-        file.close()    
-        print("saved templates/route_graph_test.html")
-    os.remove("templates/route_graph_test.html")
-                        
-if __name__ == '__main__':
-    app.run(debug=True)
+ 
