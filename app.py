@@ -9,14 +9,11 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import os
 
-os.system("export APP_CONFIG_FILE=settings.py")
 app = Flask(__name__)
-app.config.from_object(__name__)
-app.config.from_envvar('APP_CONFIG_FILE', silent=True)
 app.vars = {}
 bos_graph = nx.read_gpickle('BostonGraph.gpickle')
 
-MAPBOX_ACCESS_KEY = app.config['MAPBOX_ACCESS_KEY']
+MAPBOX_ACCESS_KEY = 'pk.eyJ1IjoiamFrZWpieWkiLCJhIjoiY2s2Y2VneTJjMTNxZTNtbjhuanNjeGkyciJ9.b0pkKSJC5sHWrwXENm46KA'
 
 
 @app.route('/index',methods=['GET','POST'])
@@ -146,4 +143,6 @@ def address_to_coord(addr):
     except GeocoderTimedOut:
         return address_to_coord(addr)
     return (location.latitude, location.longitude)
- 
+
+if __name__ == '__main__':
+    app.run(debug=True) 
