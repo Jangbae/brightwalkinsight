@@ -15,3 +15,4 @@ pandas==0.25.3
 pip==20.0.2
 requests==2.22.0
 shapely==1.7.0
+geojson==2.5.0
