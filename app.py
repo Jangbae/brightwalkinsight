@@ -56,8 +56,8 @@ def index():
             route_end = o_routes_Geo[0][-1],
             s_route_data=o_routes_Geo[1],            
             cL=app.vars['currentL'],tL=app.vars['targetL'], incTime=int((0.85/60)*(routeInfo[4]-routeInfo[0])),
-            f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3], 
-            s_distance=int(routeInfo[4]), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7],
+            f_distance=int(routeInfo[0]*0.000621371), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3], 
+            s_distance=int(routeInfo[4]*0.000621371), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7],
             center=centerP
         )   
 
@@ -101,8 +101,8 @@ def next_route():
             route_start = o_routes_Geo[0][0],
             route_end = o_routes_Geo[0][-1],                        
             cL=app.vars['currentL'],tL=app.vars['targetL'], incTime=int((0.85/60)*(routeInfo[4]-routeInfo[0])),
-            f_distance=int(routeInfo[0]), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3],
-            s_distance=int(routeInfo[4]), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7], center=centerP)   
+            f_distance=int(routeInfo[0]*0.000621371), f_nlight=routeInfo[1], f_nCrime=routeInfo[2], f_nAccid=routeInfo[3],
+            s_distance=int(routeInfo[4]*0.000621371), s_nlight=routeInfo[5], s_nCrime=routeInfo[6], s_nAccid=routeInfo[7], center=centerP)   
 
 def find_route(start, target, graph):
     f_route = nx.dijkstra_path(graph, start, target, weight='length')
