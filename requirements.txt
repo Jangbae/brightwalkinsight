@@ -12,7 +12,7 @@ networkx==2.4
 numpy==1.18.1
 osmnx==0.11.3
 pandas==0.25.3
-pip==20.0.2
+pip==21.1
 requests==2.22.0
 shapely==1.7.0
 geojson==2.5.0
